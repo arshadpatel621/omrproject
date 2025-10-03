@@ -18,6 +18,12 @@ const MAPPING = {
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
+  // Added common tab icons for cross-platform support
+  'square.and.arrow.up': 'file-upload',
+  'gearshape.2.fill': 'admin-panel-settings',
+  'chart.bar.fill': 'bar-chart',
+  'person.2.fill': 'school',
+  'magnifyingglass': 'search',
 } as IconMapping;
 
 /**
