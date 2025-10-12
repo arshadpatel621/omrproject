@@ -10,16 +10,19 @@ import { useToast } from '@/contexts/ToastContext';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { api, authHeaders } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
+import { downloadFile, exportToCSV, exportToExcel } from '@/lib/exportUtils';
+import { mockResults, StudentResult } from '@/lib/mockData';
 import { useQuery } from '@tanstack/react-query';
-import React, { useMemo, useState } from 'react';
-import { Linking, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 export default function ResultsScreen() {
   const { token } = useAuth();
   const { showSuccess, showError } = useToast();
   const [testId, setTestId] = useState('1');
-  const [viewType, setViewType] = useState<ViewType>('card');
+  const [viewType, setViewType] = useState<ViewType>('table');
+  const [showMockData, setShowMockData] = useState(false);
   
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
@@ -36,11 +39,23 @@ export default function ResultsScreen() {
 
   const exportCsv = async () => {
     try {
-      const base = (api.defaults.baseURL || '').replace(/\/$/, '');
-      await Linking.openURL(`${base}/reports/test/${Number(testId)}.csv`);
-      showSuccess('CSV export initiated successfully!');
+      const resultsToExport = showMockData ? mockResults : (data || []);
+      const csvContent = exportToCSV(resultsToExport, `student_results_${new Date().toISOString().split('T')[0]}`);
+      downloadFile(csvContent, 'student_results', 'csv');
+      showSuccess('CSV export prepared successfully!');
     } catch (error) {
       showError('Failed to export CSV file');
+    }
+  };
+
+  const exportExcel = async () => {
+    try {
+      const resultsToExport = showMockData ? mockResults : (data || []);
+      const excelContent = exportToExcel(resultsToExport, `student_results_${new Date().toISOString().split('T')[0]}`);
+      downloadFile(excelContent, 'student_results', 'xlsx');
+      showSuccess('Excel export prepared successfully!');
+    } catch (error) {
+      showError('Failed to export Excel file');
     }
   };
 
@@ -57,10 +72,18 @@ export default function ResultsScreen() {
     }
   };
 
+  const loadMockData = () => {
+    setShowMockData(true);
+    showSuccess('Mock data loaded successfully!');
+  };
+
   const sortedData = useMemo(() => {
+    if (showMockData) {
+      return [...mockResults].sort((a, b) => b.marks - a.marks);
+    }
     if (!data) return [];
     return [...data].sort((a, b) => (b.score || 0) - (a.score || 0));
-  }, [data]);
+  }, [data, showMockData]);
 
   return (
     <ScrollView 
@@ -69,9 +92,9 @@ export default function ResultsScreen() {
       showsVerticalScrollIndicator={false}
     >
       <Animated.View entering={FadeInDown.duration(350)}>
-        <ThemedText type="title" style={styles.title}>Test Results</ThemedText>
+        <ThemedText type="title" style={styles.title}>Student Results</ThemedText>
         <ThemedText style={styles.subtitle}>
-          View and analyze OMR test results with detailed performance metrics
+          View and analyze student test results with rank-wise sorting
         </ThemedText>
       </Animated.View>
 
@@ -98,7 +121,16 @@ export default function ResultsScreen() {
             />
           </View>
           
-          {data && data.length > 0 && (
+          <View style={styles.buttonRow}>
+            <UIButton 
+              title="Load Demo Data" 
+              onPress={loadMockData}
+              variant="outline"
+              style={styles.demoButton}
+            />
+          </View>
+          
+          {(data && data.length > 0) || showMockData ? (
             <View style={styles.viewControls}>
               <ThemedText style={styles.viewLabel}>View:</ThemedText>
               <ViewToggle 
@@ -107,7 +139,7 @@ export default function ResultsScreen() {
                 style={styles.viewToggle}
               />
             </View>
-          )}
+          ) : null}
         </Card>
       </Animated.View>
 
@@ -117,16 +149,16 @@ export default function ResultsScreen() {
             <SkeletonCard key={index} style={styles.skeletonCard} />
           ))}
         </Animated.View>
-      ) : data && data.length > 0 ? (
+      ) : (data && data.length > 0) || showMockData ? (
         <Animated.View entering={FadeInUp.delay(200)}>
           {viewType === 'card' ? (
             <View style={styles.cardsContainer}>
               {sortedData.map((item, index) => (
                 <ResultCard
                   key={item.id}
-                  studentId={item.studentIdentifier || `Student ${index + 1}`}
-                  score={item.score || 0}
-                  maxScore={100}
+                  studentId={showMockData ? (item as StudentResult).studentName : (item.studentIdentifier || `Student ${index + 1}`)}
+                  score={showMockData ? (item as StudentResult).marks : (item.score || 0)}
+                  maxScore={showMockData ? (item as StudentResult).totalMarks : 100}
                   rank={index + 1}
                   index={index}
                 />
@@ -134,7 +166,12 @@ export default function ResultsScreen() {
             </View>
           ) : (
             <ResultsTable
-              data={sortedData}
+              data={sortedData.map((item, index) => ({
+                id: item.id,
+                studentIdentifier: showMockData ? (item as StudentResult).studentName : (item.studentIdentifier || `Student ${index + 1}`),
+                score: showMockData ? (item as StudentResult).marks : (item.score || 0),
+                maxScore: showMockData ? (item as StudentResult).totalMarks : 100
+              }))}
               style={styles.tableContainer}
             />
           )}
@@ -143,21 +180,30 @@ export default function ResultsScreen() {
         <Animated.View entering={FadeInUp.delay(200)}>
           <Card variant="glass" style={styles.emptyCard}>
             <ThemedText style={styles.emptyText}>
-              No results found. Load results using the controls above.
+              No results found. Load results using the controls above or try demo data.
             </ThemedText>
           </Card>
         </Animated.View>
       )}
 
-      {data && data.length > 0 && (
+      {((data && data.length > 0) || showMockData) && (
         <Animated.View entering={FadeInUp.delay(300)}>
-          <UIButton 
-            title="Export to CSV" 
-            onPress={exportCsv}
-            variant="outline"
-            size="lg"
-            style={styles.exportButton}
-          />
+          <View style={styles.exportButtons}>
+            <UIButton 
+              title="Export to CSV" 
+              onPress={exportCsv}
+              variant="outline"
+              size="lg"
+              style={styles.exportButton}
+            />
+            <UIButton 
+              title="Export to Excel" 
+              onPress={exportExcel}
+              variant="outline"
+              size="lg"
+              style={styles.exportButton}
+            />
+          </View>
         </Animated.View>
       )}
     </ScrollView>
@@ -245,5 +291,15 @@ const styles = StyleSheet.create({
   },
   exportButton: {
     marginBottom: Spacing.lg,
+  },
+  buttonRow: {
+    marginTop: Spacing.md,
+    alignItems: 'center',
+  },
+  demoButton: {
+    minWidth: 150,
+  },
+  exportButtons: {
+    gap: Spacing.md,
   },
 });

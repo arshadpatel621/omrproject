@@ -5,7 +5,6 @@ import { Spacing } from '@/constants/theme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useAuth } from '@/lib/auth';
 import { router } from 'expo-router';
-import React from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
@@ -15,25 +14,11 @@ export default function HomeScreen() {
   const primaryColor = useThemeColor({}, 'primary');
 
   const getWelcomeMessage = () => {
-    switch (user?.role) {
-      case 'ADMIN':
-        return 'Welcome, Administrator';
-      case 'TEACHER':
-        return 'Welcome, Teacher';
-      default:
-        return 'Welcome to Smart OMR';
-    }
+    return 'Welcome to OMR Management System';
   };
 
   const getRoleDescription = () => {
-    switch (user?.role) {
-      case 'ADMIN':
-        return 'Manage tests, view analytics, and oversee the entire OMR evaluation system';
-      case 'TEACHER':
-        return 'Upload OMR sheets, view results, and track student performance';
-      default:
-        return 'Access OMR evaluation results and performance analytics';
-    }
+    return 'Upload answer sheets, view results, and manage student performance';
   };
 
   return (
@@ -68,45 +53,54 @@ export default function HomeScreen() {
           <Card variant="elevated" style={styles.actionCard}>
             <Pressable 
               style={styles.actionButton} 
+              onPress={() => router.push('/(tabs)/upload')}
+            >
+              <IconSymbol name="square.and.arrow.up.fill" size={32} color={primaryColor} />
+              <ThemedText style={styles.actionTitle}>Upload Files</ThemedText>
+              <ThemedText style={styles.actionDescription}>
+                Upload answer keys and student sheets
+              </ThemedText>
+            </Pressable>
+          </Card>
+
+          <Card variant="elevated" style={styles.actionCard}>
+            <Pressable 
+              style={styles.actionButton} 
               onPress={() => router.push('/(tabs)/results')}
             >
               <IconSymbol name="chart.bar.fill" size={32} color={primaryColor} />
               <ThemedText style={styles.actionTitle}>View Results</ThemedText>
               <ThemedText style={styles.actionDescription}>
-                Analyze test results and performance metrics
+                Analyze test results and performance
               </ThemedText>
             </Pressable>
           </Card>
 
-          {user?.role === 'TEACHER' && (
-            <Card variant="elevated" style={styles.actionCard}>
-              <Pressable 
-                style={styles.actionButton} 
-                onPress={() => router.push('/(tabs)/upload')}
-              >
-                <IconSymbol name="square.and.arrow.up.fill" size={32} color={primaryColor} />
-                <ThemedText style={styles.actionTitle}>Upload OMR</ThemedText>
-                <ThemedText style={styles.actionDescription}>
-                  Upload and process OMR sheets
-                </ThemedText>
-              </Pressable>
-            </Card>
-          )}
+          <Card variant="elevated" style={styles.actionCard}>
+            <Pressable 
+              style={styles.actionButton} 
+              onPress={() => router.push('/(tabs)/admin')}
+            >
+              <IconSymbol name="gearshape.2.fill" size={32} color={primaryColor} />
+              <ThemedText style={styles.actionTitle}>Analytics</ThemedText>
+              <ThemedText style={styles.actionDescription}>
+                View detailed analytics and reports
+              </ThemedText>
+            </Pressable>
+          </Card>
 
-          {user?.role === 'ADMIN' && (
-            <Card variant="elevated" style={styles.actionCard}>
-              <Pressable 
-                style={styles.actionButton} 
-                onPress={() => router.push('/(tabs)/admin')}
-              >
-                <IconSymbol name="gearshape.2.fill" size={32} color={primaryColor} />
-                <ThemedText style={styles.actionTitle}>Admin Panel</ThemedText>
-                <ThemedText style={styles.actionDescription}>
-                  Manage tests and system settings
-                </ThemedText>
-              </Pressable>
-            </Card>
-          )}
+          <Card variant="elevated" style={styles.actionCard}>
+            <Pressable 
+              style={styles.actionButton} 
+              onPress={() => router.push('/(tabs)/teacher')}
+            >
+              <IconSymbol name="person.2.fill" size={32} color={primaryColor} />
+              <ThemedText style={styles.actionTitle}>Student Management</ThemedText>
+              <ThemedText style={styles.actionDescription}>
+                Manage student information and classes
+              </ThemedText>
+            </Pressable>
+          </Card>
         </View>
       </Animated.View>
 
@@ -116,19 +110,19 @@ export default function HomeScreen() {
           <View style={styles.featuresList}>
             <View style={styles.featureItem}>
               <IconSymbol name="checkmark.circle.fill" size={20} color={primaryColor} />
-              <ThemedText style={styles.featureText}>Automated OMR Processing</ThemedText>
+              <ThemedText style={styles.featureText}>Class-based File Upload</ThemedText>
             </View>
             <View style={styles.featureItem}>
               <IconSymbol name="checkmark.circle.fill" size={20} color={primaryColor} />
-              <ThemedText style={styles.featureText}>Real-time Results Analysis</ThemedText>
+              <ThemedText style={styles.featureText}>Drag & Drop Interface</ThemedText>
             </View>
             <View style={styles.featureItem}>
               <IconSymbol name="checkmark.circle.fill" size={20} color={primaryColor} />
-              <ThemedText style={styles.featureText}>Performance Analytics</ThemedText>
+              <ThemedText style={styles.featureText}>Rank-wise Results Display</ThemedText>
             </View>
             <View style={styles.featureItem}>
               <IconSymbol name="checkmark.circle.fill" size={20} color={primaryColor} />
-              <ThemedText style={styles.featureText}>Export to CSV</ThemedText>
+              <ThemedText style={styles.featureText}>CSV/Excel Export</ThemedText>
             </View>
           </View>
         </Card>

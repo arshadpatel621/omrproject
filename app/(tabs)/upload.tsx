@@ -5,50 +5,50 @@ import { DragDropUpload } from '@/components/ui/drag-drop-upload';
 import { BorderRadius, Spacing } from '@/constants/theme';
 import { useToast } from '@/contexts/ToastContext';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { api, authHeaders } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 export default function UploadScreen() {
   const { token } = useAuth();
   const { showSuccess, showError } = useToast();
-  const [testId, setTestId] = useState('');
-  const [version, setVersion] = useState('A');
-  const [student, setStudent] = useState('S-001');
-  const [imageUrl, setImageUrl] = useState('');
+  const [selectedClass, setSelectedClass] = useState('');
+  const [answerKeyUrl, setAnswerKeyUrl] = useState('');
+  const [studentSheetsUrl, setStudentSheetsUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const classes = [
+    'Class 1A', 'Class 1B', 'Class 2A', 'Class 2B',
+    'Class 3A', 'Class 3B', 'Class 4A', 'Class 4B',
+    'Class 5A', 'Class 5B', 'Class 6A', 'Class 6B',
+    'Class 7A', 'Class 7B', 'Class 8A', 'Class 8B',
+    'Class 9A', 'Class 9B', 'Class 10A', 'Class 10B'
+  ];
 
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
   const borderColor = useThemeColor({}, 'border');
 
   const submit = async () => {
-    if (!testId || !version || !student || !imageUrl) {
-      showError('Please fill in all required fields');
+    if (!selectedClass || !answerKeyUrl || !studentSheetsUrl) {
+      showError('Please select a class and upload both files');
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const res = await api.post('/submissions', { 
-        testId: Number(testId), 
-        versionCode: version, 
-        studentIdentifier: student, 
-        imageUrl 
-      }, { headers: authHeaders(token) });
+      // Simulate upload process
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      await api.post(`/submissions/${res.data.id}/process`, {}, { headers: authHeaders(token) });
-      showSuccess('OMR sheet uploaded and processed successfully!');
+      showSuccess('Files uploaded and processed successfully!');
       
       // Reset form
-      setTestId('');
-      setVersion('A');
-      setStudent('S-001');
-      setImageUrl('');
+      setSelectedClass('');
+      setAnswerKeyUrl('');
+      setStudentSheetsUrl('');
     } catch (e: any) {
-      showError(e?.response?.data?.error || 'Failed to upload OMR sheet');
+      showError('Failed to upload files');
     } finally {
       setIsSubmitting(false);
     }
@@ -61,82 +61,77 @@ export default function UploadScreen() {
       showsVerticalScrollIndicator={false}
     >
       <Animated.View entering={FadeInDown.duration(350)}>
-        <ThemedText type="title" style={styles.title}>Upload OMR Sheet</ThemedText>
+        <ThemedText type="title" style={styles.title}>Upload Files</ThemedText>
         <ThemedText style={styles.subtitle}>
-          Upload your scanned OMR sheet for automated evaluation and analysis
+          Upload answer keys and student answer sheets for processing
         </ThemedText>
       </Animated.View>
 
       <Animated.View entering={FadeInDown.delay(100)}>
-        <Card variant="glass" style={styles.uploadCard}>
-          <DragDropUpload
-            onFileSelect={(file) => console.log('File selected:', file)}
-            onImageUrlChange={setImageUrl}
-            imageUrl={imageUrl}
-          />
+        <Card variant="elevated" style={styles.formCard}>
+          <ThemedText type="subtitle" style={styles.formTitle}>Select Class</ThemedText>
+          
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>Student Class *</ThemedText>
+            <View style={[styles.classSelector, { borderColor }]}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.classScroll}>
+                {classes.map((className) => (
+                  <Pressable
+                    key={className}
+                    onPress={() => setSelectedClass(className)}
+                    style={[
+                      styles.classOption,
+                      { 
+                        backgroundColor: selectedClass === className ? primaryColor : 'transparent',
+                        borderColor: selectedClass === className ? primaryColor : borderColor
+                      }
+                    ]}
+                  >
+                    <ThemedText style={[
+                      styles.classOptionText,
+                      { color: selectedClass === className ? '#FFFFFF' : textColor }
+                    ]}>
+                      {className}
+                    </ThemedText>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
         </Card>
       </Animated.View>
 
       <Animated.View entering={FadeInDown.delay(200)}>
-        <Card variant="elevated" style={styles.formCard}>
-          <ThemedText type="subtitle" style={styles.formTitle}>Test Information</ThemedText>
-          
-          <View style={styles.inputGroup}>
-            <ThemedText style={styles.inputLabel}>Test ID *</ThemedText>
-            <TextInput 
-              placeholder="Enter test ID" 
-              value={testId} 
-              onChangeText={setTestId} 
-              style={[styles.input, { borderColor, color: textColor }]}
-              placeholderTextColor={useThemeColor({}, 'textMuted')}
-              keyboardType="numeric"
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <ThemedText style={styles.inputLabel}>Version *</ThemedText>
-            <TextInput 
-              placeholder="A, B, C, or D" 
-              value={version} 
-              onChangeText={setVersion} 
-              style={[styles.input, { borderColor, color: textColor }]}
-              placeholderTextColor={useThemeColor({}, 'textMuted')}
-              maxLength={1}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <ThemedText style={styles.inputLabel}>Student ID *</ThemedText>
-            <TextInput 
-              placeholder="Enter student identifier" 
-              value={student} 
-              onChangeText={setStudent} 
-              style={[styles.input, { borderColor, color: textColor }]}
-              placeholderTextColor={useThemeColor({}, 'textMuted')}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <ThemedText style={styles.inputLabel}>Image URL *</ThemedText>
-            <TextInput 
-              placeholder="Enter image URL" 
-              value={imageUrl} 
-              onChangeText={setImageUrl} 
-              style={[styles.input, { borderColor, color: textColor }]}
-              placeholderTextColor={useThemeColor({}, 'textMuted')}
-              multiline
-            />
-          </View>
-
-          <UIButton 
-            title="Process OMR Sheet" 
-            onPress={submit}
-            loading={isSubmitting}
-            disabled={isSubmitting}
-            size="lg"
-            style={styles.submitButton}
+        <Card variant="glass" style={styles.uploadCard}>
+          <ThemedText type="subtitle" style={styles.uploadTitle}>Answer Key</ThemedText>
+          <DragDropUpload
+            onFileSelect={(file) => console.log('Answer key selected:', file)}
+            onImageUrlChange={setAnswerKeyUrl}
+            imageUrl={answerKeyUrl}
           />
         </Card>
+      </Animated.View>
+
+      <Animated.View entering={FadeInDown.delay(300)}>
+        <Card variant="glass" style={styles.uploadCard}>
+          <ThemedText type="subtitle" style={styles.uploadTitle}>Student Answer Sheets</ThemedText>
+          <DragDropUpload
+            onFileSelect={(file) => console.log('Student sheets selected:', file)}
+            onImageUrlChange={setStudentSheetsUrl}
+            imageUrl={studentSheetsUrl}
+          />
+        </Card>
+      </Animated.View>
+
+      <Animated.View entering={FadeInDown.delay(400)}>
+        <UIButton 
+          title="Upload and Process Files" 
+          onPress={submit}
+          loading={isSubmitting}
+          disabled={isSubmitting || !selectedClass || !answerKeyUrl || !studentSheetsUrl}
+          size="lg"
+          style={styles.submitButton}
+        />
       </Animated.View>
     </ScrollView>
   );
@@ -189,5 +184,30 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: Spacing.lg,
+  },
+  uploadTitle: {
+    marginBottom: Spacing.md,
+    textAlign: 'center',
+  },
+  classSelector: {
+    borderWidth: 1.5,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.sm,
+  },
+  classScroll: {
+    maxHeight: 60,
+  },
+  classOption: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    marginRight: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  classOptionText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

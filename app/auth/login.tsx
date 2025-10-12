@@ -1,26 +1,24 @@
-import React, { useMemo, useState } from 'react';
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  SafeAreaView,
-} from 'react-native';
 import { ThemedText } from '@/components/themed-text';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/lib/auth';
 import { router } from 'expo-router';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { api } from '@/lib/api';
+import { useMemo, useState } from 'react';
+import {
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    TextInput,
+    View
+} from 'react-native';
 
 export default function LoginScreen() {
   const { login, applyAuth, demoLogin } = useAuth();
   const [email, setEmail] = useState('admin@example.com');
-  const [password, setPassword] = useState('pass123');
+  const [password, setPassword] = useState('password');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +35,7 @@ export default function LoginScreen() {
       setError(null);
       setLoading(true);
       const user = await login(email.trim(), password);
-      router.replace('/post-login');
+      router.replace('/(tabs)/home');
     } catch (e: any) {
       const msg = e?.response?.data?.error || e?.message || 'Check your credentials';
       setError(typeof msg === 'string' ? msg : 'Login failed');
@@ -106,25 +104,15 @@ export default function LoginScreen() {
               onPress={async () => {
                 // Instant demo: set role immediately and navigate
                 await demoLogin('ADMIN');
-                router.replace('/post-login');
+                router.replace('/(tabs)/home');
               }}
               style={[styles.secondaryBtn, { borderColor: border }]}
             >
-              <ThemedText style={styles.secondaryBtnText}>Instant Demo Admin</ThemedText>
-            </Pressable>
-
-            <Pressable
-              onPress={async () => {
-                await demoLogin('TEACHER');
-                router.replace('/post-login');
-              }}
-              style={[styles.secondaryBtn, { borderColor: border }]}
-            >
-              <ThemedText style={styles.secondaryBtnText}>Instant Demo Teacher</ThemedText>
+              <ThemedText style={styles.secondaryBtnText}>Quick Demo Login</ThemedText>
             </Pressable>
 
             <View style={{ marginTop: 12 }}>
-              <ThemedText style={{ textAlign: 'center', opacity: 0.7 }}>Tip: Use your admin or teacher account.</ThemedText>
+              <ThemedText style={{ textAlign: 'center', opacity: 0.7 }}>Demo: admin@example.com / password</ThemedText>
             </View>
           </View>
         </ScrollView>
