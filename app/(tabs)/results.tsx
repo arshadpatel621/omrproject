@@ -1,15 +1,30 @@
-import React, { useMemo, useState } from 'react';
-import { View, FlatList, TextInput, StyleSheet, Linking } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
-import { useAuth } from '@/lib/auth';
-import { api, authHeaders } from '@/lib/api';
-import { useQuery } from '@tanstack/react-query';
-import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { UIButton } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { ResultCard } from '@/components/ui/result-card';
+import { ResultsTable } from '@/components/ui/results-table';
+import { SkeletonCard } from '@/components/ui/skeleton';
+import { ViewToggle, ViewType } from '@/components/ui/view-toggle';
+import { BorderRadius, Spacing } from '@/constants/theme';
+import { useToast } from '@/contexts/ToastContext';
+import { useThemeColor } from '@/hooks/use-theme-color';
+import { api, authHeaders } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
+import { useQuery } from '@tanstack/react-query';
+import React, { useMemo, useState } from 'react';
+import { Linking, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 export default function ResultsScreen() {
   const { token } = useAuth();
+  const { showSuccess, showError } = useToast();
   const [testId, setTestId] = useState('1');
+  const [viewType, setViewType] = useState<ViewType>('card');
+  
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const borderColor = useThemeColor({}, 'border');
+
   const { data, isFetching, refetch } = useQuery({
     enabled: false,
     queryKey: ['results', testId],
@@ -19,41 +34,216 @@ export default function ResultsScreen() {
     }
   });
 
-  const exportCsv = () => {
-    const base = (api.defaults.baseURL || '').replace(/\/$/, '');
-    Linking.openURL(`${base}/reports/test/${Number(testId)}.csv`);
+  const exportCsv = async () => {
+    try {
+      const base = (api.defaults.baseURL || '').replace(/\/$/, '');
+      await Linking.openURL(`${base}/reports/test/${Number(testId)}.csv`);
+      showSuccess('CSV export initiated successfully!');
+    } catch (error) {
+      showError('Failed to export CSV file');
+    }
   };
 
+  const loadResults = async () => {
+    if (!testId) {
+      showError('Please enter a test ID');
+      return;
+    }
+    try {
+      await refetch();
+      showSuccess('Results loaded successfully!');
+    } catch (error) {
+      showError('Failed to load results');
+    }
+  };
+
+  const sortedData = useMemo(() => {
+    if (!data) return [];
+    return [...data].sort((a, b) => (b.score || 0) - (a.score || 0));
+  }, [data]);
+
   return (
-    <View style={{ flex: 1, padding: 16 }}>
+    <ScrollView 
+      style={[styles.container, { backgroundColor }]}
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={false}
+    >
       <Animated.View entering={FadeInDown.duration(350)}>
-        <ThemedText type="title">Results</ThemedText>
-        <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', marginBottom: 12 }}>
-          <TextInput placeholder="Test ID" value={testId} onChangeText={setTestId} style={styles.input} />
-          <UIButton title={isFetching ? 'Loading…' : 'Load'} onPress={() => refetch()} />
-        </View>
+        <ThemedText type="title" style={styles.title}>Test Results</ThemedText>
+        <ThemedText style={styles.subtitle}>
+          View and analyze OMR test results with detailed performance metrics
+        </ThemedText>
       </Animated.View>
 
-      <FlatList
-        data={data || []}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item, index }) => (
-          <Animated.View entering={FadeInUp.delay(index * 50)}>
-            <View style={styles.card}>
-              <ThemedText type="subtitle">{item.studentIdentifier || `Student ${index + 1}`}</ThemedText>
-              <ThemedText>Score: {item.score ?? 0}</ThemedText>
+      <Animated.View entering={FadeInDown.delay(100)}>
+        <Card variant="elevated" style={styles.controlsCard}>
+          <View style={styles.controlsRow}>
+            <View style={styles.inputContainer}>
+              <ThemedText style={styles.inputLabel}>Test ID</ThemedText>
+              <TextInput 
+                placeholder="Enter test ID" 
+                value={testId} 
+                onChangeText={setTestId} 
+                style={[styles.input, { borderColor, color: textColor }]}
+                placeholderTextColor={useThemeColor({}, 'textMuted')}
+                keyboardType="numeric"
+              />
             </View>
-          </Animated.View>
-        )}
-        ListEmptyComponent={<ThemedText>No results yet. Load results above.</ThemedText>}
-      />
+            <UIButton 
+              title={isFetching ? 'Loading…' : 'Load Results'} 
+              onPress={loadResults}
+              loading={isFetching}
+              disabled={isFetching}
+              style={styles.loadButton}
+            />
+          </View>
+          
+          {data && data.length > 0 && (
+            <View style={styles.viewControls}>
+              <ThemedText style={styles.viewLabel}>View:</ThemedText>
+              <ViewToggle 
+                currentView={viewType} 
+                onViewChange={setViewType}
+                style={styles.viewToggle}
+              />
+            </View>
+          )}
+        </Card>
+      </Animated.View>
 
-      <UIButton title="Export Results" onPress={exportCsv} />
-    </View>
+      {isFetching ? (
+        <Animated.View entering={FadeInUp.delay(200)}>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <SkeletonCard key={index} style={styles.skeletonCard} />
+          ))}
+        </Animated.View>
+      ) : data && data.length > 0 ? (
+        <Animated.View entering={FadeInUp.delay(200)}>
+          {viewType === 'card' ? (
+            <View style={styles.cardsContainer}>
+              {sortedData.map((item, index) => (
+                <ResultCard
+                  key={item.id}
+                  studentId={item.studentIdentifier || `Student ${index + 1}`}
+                  score={item.score || 0}
+                  maxScore={100}
+                  rank={index + 1}
+                  index={index}
+                />
+              ))}
+            </View>
+          ) : (
+            <ResultsTable
+              data={sortedData}
+              style={styles.tableContainer}
+            />
+          )}
+        </Animated.View>
+      ) : (
+        <Animated.View entering={FadeInUp.delay(200)}>
+          <Card variant="glass" style={styles.emptyCard}>
+            <ThemedText style={styles.emptyText}>
+              No results found. Load results using the controls above.
+            </ThemedText>
+          </Card>
+        </Animated.View>
+      )}
+
+      {data && data.length > 0 && (
+        <Animated.View entering={FadeInUp.delay(300)}>
+          <UIButton 
+            title="Export to CSV" 
+            onPress={exportCsv}
+            variant="outline"
+            size="lg"
+            style={styles.exportButton}
+          />
+        </Animated.View>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  input: { flex: 1, borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 12, padding: 10 },
-  card: { backgroundColor: '#f1f5f9', borderRadius: 12, padding: 12, marginBottom: 10 },
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    padding: Spacing.lg,
+  },
+  title: {
+    textAlign: 'center',
+    marginBottom: Spacing.sm,
+    fontFamily: 'Inter',
+  },
+  subtitle: {
+    textAlign: 'center',
+    opacity: 0.7,
+    marginBottom: Spacing['2xl'],
+    lineHeight: 22,
+  },
+  controlsCard: {
+    marginBottom: Spacing.lg,
+  },
+  controlsRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: Spacing.md,
+    marginBottom: Spacing.lg,
+  },
+  inputContainer: {
+    flex: 1,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: Spacing.sm,
+    opacity: 0.9,
+  },
+  input: {
+    borderWidth: 1.5,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    fontSize: 16,
+    fontFamily: 'Inter',
+    minHeight: 48,
+  },
+  loadButton: {
+    minWidth: 120,
+  },
+  viewControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  viewLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    opacity: 0.9,
+  },
+  viewToggle: {
+    marginLeft: Spacing.md,
+  },
+  cardsContainer: {
+    marginBottom: Spacing.lg,
+  },
+  tableContainer: {
+    marginBottom: Spacing.lg,
+  },
+  skeletonCard: {
+    marginBottom: Spacing.md,
+  },
+  emptyCard: {
+    padding: Spacing['2xl'],
+    alignItems: 'center',
+    marginBottom: Spacing.lg,
+  },
+  emptyText: {
+    textAlign: 'center',
+    opacity: 0.7,
+    fontSize: 16,
+  },
+  exportButton: {
+    marginBottom: Spacing.lg,
+  },
 });
