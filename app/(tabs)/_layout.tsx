@@ -75,7 +75,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
+          title: 'Dashboard',
           tabBarIcon: ({ color, focused }) => (
             <IconSymbol 
               size={24} 
@@ -86,9 +86,22 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="exam-details"
+        options={{
+          title: 'Exam Details',
+          tabBarIcon: ({ color, focused }) => (
+            <IconSymbol 
+              size={24} 
+              name={focused ? "doc.text.fill" : "doc.text"} 
+              color={color} 
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="upload"
         options={{
-          title: 'Upload OMR',
+          title: 'Upload Sheets',
           tabBarIcon: ({ color, focused }) => (
             <IconSymbol 
               size={24} 
@@ -97,35 +110,6 @@ export default function TabLayout() {
             />
           ),
         }}
-        {...(user?.role === 'TEACHER' ? {} : { href: null })}
-      />
-      <Tabs.Screen
-        name="teacher"
-        options={{
-          title: 'Teacher',
-          tabBarIcon: ({ color, focused }) => (
-            <IconSymbol 
-              size={24} 
-              name={focused ? "person.2.fill" : "person.2"} 
-              color={color} 
-            />
-          ),
-        }}
-        {...(user?.role === 'TEACHER' ? {} : { href: null })}
-      />
-      <Tabs.Screen
-        name="admin"
-        options={{
-          title: 'Admin',
-          tabBarIcon: ({ color, focused }) => (
-            <IconSymbol 
-              size={24} 
-              name={focused ? "gearshape.2.fill" : "gearshape.2"} 
-              color={color} 
-            />
-          ),
-        }}
-        {...(user?.role === 'ADMIN' ? {} : { href: null })}
       />
       <Tabs.Screen
         name="results"
@@ -141,6 +125,8 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen name="explore" options={{ href: null }} />
+      <Tabs.Screen name="teacher" options={{ href: null }} />
+      <Tabs.Screen name="admin" options={{ href: null }} />
     </Tabs>
   );
 }

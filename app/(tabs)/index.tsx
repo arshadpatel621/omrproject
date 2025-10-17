@@ -5,7 +5,6 @@ import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   return (
@@ -22,10 +21,8 @@ export default function HomeScreen() {
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Get started</ThemedText>
-        <Link href="/auth/login">
-          <ThemedText type="link">Go to Login</ThemedText>
-        </Link>
+        <ThemedText type="subtitle">Welcome to OMR App</ThemedText>
+        <ThemedText>Your intelligent optical mark recognition system</ThemedText>
       </ThemedView>
     </ParallaxScrollView>
   );

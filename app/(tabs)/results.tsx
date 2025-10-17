@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { UIButton } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ResultCard } from '@/components/ui/result-card';
 import { ResultsTable } from '@/components/ui/results-table';
 import { SkeletonCard } from '@/components/ui/skeleton';
@@ -27,6 +28,7 @@ export default function ResultsScreen() {
   const backgroundColor = useThemeColor({}, 'background');
   const textColor = useThemeColor({}, 'text');
   const borderColor = useThemeColor({}, 'border');
+  const primaryColor = useThemeColor({}, 'primary');
 
   const { data, isFetching, refetch } = useQuery({
     enabled: false,
@@ -92,10 +94,21 @@ export default function ResultsScreen() {
       showsVerticalScrollIndicator={false}
     >
       <Animated.View entering={FadeInDown.duration(350)}>
-        <ThemedText type="title" style={styles.title}>Student Results</ThemedText>
-        <ThemedText style={styles.subtitle}>
-          View and analyze student test results with rank-wise sorting
-        </ThemedText>
+        <View style={styles.headerSection}>
+          <View style={styles.headerLeft}>
+            <IconSymbol name="chart.bar.fill" size={32} color={primaryColor} />
+            <View style={styles.headerText}>
+              <ThemedText type="title" style={styles.title}>Results & Rankings</ThemedText>
+              <ThemedText style={styles.subtitle}>
+                Comprehensive student performance analysis
+              </ThemedText>
+            </View>
+          </View>
+          <View style={styles.headerStats}>
+            <ThemedText style={styles.statsNumber}>{sortedData.length}</ThemedText>
+            <ThemedText style={styles.statsLabel}>Students</ThemedText>
+          </View>
+        </View>
       </Animated.View>
 
       <Animated.View entering={FadeInDown.delay(100)}>
@@ -150,7 +163,53 @@ export default function ResultsScreen() {
           ))}
         </Animated.View>
       ) : (data && data.length > 0) || showMockData ? (
-        <Animated.View entering={FadeInUp.delay(200)}>
+        <>
+          {/* Statistics Overview */}
+          <Animated.View entering={FadeInDown.delay(200)}>
+            <View style={styles.statsOverview}>
+              <Card variant="gradient" style={styles.overviewCard}>
+                <View style={styles.overviewContent}>
+                  <IconSymbol name="trophy.fill" size={28} color="#FFFFFF" />
+                  <View style={styles.overviewText}>
+                    <ThemedText style={styles.overviewTitle}>Top Score</ThemedText>
+                    <ThemedText style={styles.overviewValue}>
+                      {showMockData ? Math.max(...mockResults.map(r => r.marks)) : (sortedData[0]?.score || 0)}/{showMockData ? mockResults[0]?.totalMarks || 100 : 100}
+                    </ThemedText>
+                  </View>
+                </View>
+              </Card>
+              
+              <Card variant="elevated" style={styles.overviewCard}>
+                <View style={styles.overviewContent}>
+                  <IconSymbol name="chart.line.uptrend.xyaxis" size={24} color={primaryColor} />
+                  <View style={styles.overviewText}>
+                    <ThemedText style={[styles.overviewTitle, { color: textColor }]}>Average</ThemedText>
+                    <ThemedText style={[styles.overviewValue, { color: textColor }]}>
+                      {showMockData 
+                        ? Math.round(mockResults.reduce((sum, r) => sum + r.marks, 0) / mockResults.length)
+                        : Math.round(sortedData.reduce((sum, r) => sum + (r.score || 0), 0) / sortedData.length) || 0}%
+                    </ThemedText>
+                  </View>
+                </View>
+              </Card>
+              
+              <Card variant="glass" style={styles.overviewCard}>
+                <View style={styles.overviewContent}>
+                  <IconSymbol name="person.3.fill" size={24} color={primaryColor} />
+                  <View style={styles.overviewText}>
+                    <ThemedText style={[styles.overviewTitle, { color: textColor }]}>Pass Rate</ThemedText>
+                    <ThemedText style={[styles.overviewValue, { color: textColor }]}>
+                      {showMockData 
+                        ? Math.round((mockResults.filter(r => r.marks >= r.totalMarks * 0.6).length / mockResults.length) * 100)
+                        : Math.round((sortedData.filter(r => (r.score || 0) >= 60).length / sortedData.length) * 100) || 0}%
+                    </ThemedText>
+                  </View>
+                </View>
+              </Card>
+            </View>
+          </Animated.View>
+          
+          <Animated.View entering={FadeInUp.delay(250)}>
           {viewType === 'card' ? (
             <View style={styles.cardsContainer}>
               {sortedData.map((item, index) => (
@@ -175,7 +234,8 @@ export default function ResultsScreen() {
               style={styles.tableContainer}
             />
           )}
-        </Animated.View>
+          </Animated.View>
+        </>
       ) : (
         <Animated.View entering={FadeInUp.delay(200)}>
           <Card variant="glass" style={styles.emptyCard}>
@@ -301,5 +361,66 @@ const styles = StyleSheet.create({
   },
   exportButtons: {
     gap: Spacing.md,
+  },
+  headerSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: Spacing['2xl'],
+    paddingVertical: Spacing.lg,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    flex: 1,
+  },
+  headerText: {
+    marginLeft: Spacing.md,
+    flex: 1,
+  },
+  headerStats: {
+    alignItems: 'center',
+    marginLeft: Spacing.lg,
+  },
+  statsNumber: {
+    fontSize: 28,
+    fontWeight: '800',
+    marginBottom: Spacing.xs / 2,
+  },
+  statsLabel: {
+    fontSize: 12,
+    opacity: 0.7,
+    fontWeight: '600',
+  },
+  statsOverview: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+    marginBottom: Spacing.lg,
+  },
+  overviewCard: {
+    flex: 1,
+    minHeight: 80,
+    justifyContent: 'center',
+  },
+  overviewContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  overviewText: {
+    marginLeft: Spacing.sm,
+    alignItems: 'flex-start',
+  },
+  overviewTitle: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    opacity: 0.9,
+    fontWeight: '600',
+    marginBottom: Spacing.xs / 2,
+  },
+  overviewValue: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#FFFFFF',
   },
 });

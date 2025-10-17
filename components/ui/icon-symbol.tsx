@@ -14,16 +14,43 @@ type IconSymbolName = keyof typeof MAPPING;
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
 const MAPPING = {
+  // Basic navigation
   'house.fill': 'home',
+  'house': 'home',
   'paperplane.fill': 'send',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
-  // Added common tab icons for cross-platform support
-  'square.and.arrow.up': 'file-upload',
-  'gearshape.2.fill': 'admin-panel-settings',
-  'chart.bar.fill': 'bar-chart',
-  'person.2.fill': 'school',
   'magnifyingglass': 'search',
+  
+  // Tab navigation icons
+  'square.and.arrow.up': 'file-upload',
+  'square.and.arrow.up.fill': 'file-upload',
+  'gearshape.2.fill': 'admin-panel-settings',
+  'gearshape.2': 'settings',
+  'chart.bar.fill': 'bar-chart',
+  'chart.bar': 'bar-chart',
+  'person.2.fill': 'school',
+  'person.2': 'school',
+  
+  // Document and text icons
+  'doc.text.fill': 'description',
+  'doc.text': 'description',
+  'text.alignleft': 'format-align-left',
+  
+  // UI and form icons
+  'info.circle.fill': 'info',
+  'number.circle.fill': 'looks-one',
+  'checkmark.circle.fill': 'check-circle',
+  'checkmark.circle': 'check-circle-outline',
+  'person.circle.fill': 'account-circle',
+  'gearshape.fill': 'settings',
+  'clock.fill': 'access-time',
+  'clock': 'schedule',
+  
+  // Chart and analytics icons
+  'chart.line.uptrend.xyaxis': 'trending-up',
+  'trophy.fill': 'emoji-events',
+  'person.3.fill': 'group',
 } as IconMapping;
 
 /**
