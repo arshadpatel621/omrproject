@@ -93,73 +93,165 @@ const ResultPage: React.FC = () => {
 
   return (
     <main className="container mx-auto py-8 min-h-screen overflow-auto">
-      <div className="flex items-center gap-3 mb-8 cursor-pointer" onClick={() => navigate('/')}>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '12px', 
+        marginBottom: '32px',
+        cursor: 'pointer'
+      }} onClick={() => navigate('/')}>
         <ArrowLeft size={20} />
         <span>Back to Dashboard</span>
       </div>
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+      <div style={{ marginBottom: '32px' }}>
+        <h1 style={{ 
+          fontSize: '32px', 
+          fontWeight: '700', 
+          color: '#1f2937',
+          marginBottom: '8px'
+        }}>
           Student Results
         </h1>
-        <p className="text-gray-500 text-lg">
+        <p style={{ color: '#6b7280', fontSize: '18px' }}>
           View and manage student test results
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-5 mb-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
-        <div className="card p-5 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-blue-500" style={{ backgroundColor: '#3b82f620' }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+        gap: '20px',
+        marginBottom: '32px'
+      }}>
+        <div className="card" style={{ 
+          padding: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px'
+        }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            backgroundColor: '#3b82f620',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#3b82f6'
+          }}>
             <Users size={24} />
           </div>
           <div>
-            <div className="text-2xl font-bold text-gray-800 mb-1">
+            <div style={{ 
+              fontSize: '24px', 
+              fontWeight: '700', 
+              color: '#1f2937',
+              marginBottom: '4px'
+            }}>
               {stats.totalStudents}
             </div>
-            <div className="text-gray-500 text-sm">
+            <div style={{ color: '#6b7280', fontSize: '14px' }}>
               Total Students
             </div>
           </div>
         </div>
 
-        <div className="card p-5 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-emerald-500" style={{ backgroundColor: '#10b98120' }}>
+        <div className="card" style={{ 
+          padding: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px'
+        }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            backgroundColor: '#10b98120',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#10b981'
+          }}>
             <TrendingUp size={24} />
           </div>
           <div>
-            <div className="text-2xl font-bold text-gray-800 mb-1">
+            <div style={{ 
+              fontSize: '24px', 
+              fontWeight: '700', 
+              color: '#1f2937',
+              marginBottom: '4px'
+            }}>
               {stats.averageMarks}
             </div>
-            <div className="text-gray-500 text-sm">
+            <div style={{ color: '#6b7280', fontSize: '14px' }}>
               Average Marks
             </div>
           </div>
         </div>
 
-        <div className="card p-5 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-purple-500" style={{ backgroundColor: '#8b5cf620' }}>
+        <div className="card" style={{ 
+          padding: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px'
+        }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            backgroundColor: '#8b5cf620',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#8b5cf6'
+          }}>
             <Award size={24} />
           </div>
           <div>
-            <div className="text-2xl font-bold text-gray-800 mb-1">
+            <div style={{ 
+              fontSize: '24px', 
+              fontWeight: '700', 
+              color: '#1f2937',
+              marginBottom: '4px'
+            }}>
               {stats.passRate}%
             </div>
-            <div className="text-gray-500 text-sm">
+            <div style={{ color: '#6b7280', fontSize: '14px' }}>
               Pass Rate
             </div>
           </div>
         </div>
 
-        <div className="card p-5 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-amber-500" style={{ backgroundColor: '#f59e0b20' }}>
+        <div className="card" style={{ 
+          padding: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px'
+        }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            backgroundColor: '#f59e0b20',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#f59e0b'
+          }}>
             <Trophy size={24} />
           </div>
           <div>
-            <div className="text-lg font-bold text-gray-800 mb-1">
+            <div style={{ 
+              fontSize: '18px', 
+              fontWeight: '700', 
+              color: '#1f2937',
+              marginBottom: '4px'
+            }}>
               {stats.topPerformer?.studentName || 'N/A'}
             </div>
-            <div className="text-gray-500 text-sm">
+            <div style={{ color: '#6b7280', fontSize: '14px' }}>
               Top Performer
             </div>
           </div>
@@ -168,18 +260,33 @@ const ResultPage: React.FC = () => {
 
       {/* Filters and Search */}
       <div className="card">
-        <div className="grid gap-4 mb-5" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          gap: '16px',
+          marginBottom: '20px'
+        }}>
           <div className="form-group">
             <label className="form-label">Search</label>
-            <div className="relative">
+            <div style={{ position: 'relative' }}>
               <input
                 type="text"
-                className="form-input pl-10"
+                className="form-input"
                 placeholder="Search by name or roll no..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ paddingLeft: '40px' }}
               />
-              <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+              <Search 
+                size={20} 
+                style={{ 
+                  position: 'absolute', 
+                  left: '12px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)',
+                  color: '#6b7280'
+                }} 
+              />
             </div>
           </div>
 
@@ -236,40 +343,42 @@ const ResultPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end flex-wrap">
+        <div style={{ 
+          display: 'flex', 
+          gap: '12px', 
+          justifyContent: 'flex-end',
+          flexWrap: 'wrap'
+        }}>
           <button 
             className="btn btn-secondary"
             onClick={handleExportCSV}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
           >
-            <div className="flex items-center gap-2">
-              <Download size={16} />
-              <span>Export CSV</span>
-            </div>
+            <Download size={16} />
+            Export CSV
           </button>
           <button 
             className="btn btn-primary"
             onClick={handleExportExcel}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
           >
-            <div className="flex items-center gap-2">
-              <Download size={16} />
-              <span>Export Excel</span>
-            </div>
+            <Download size={16} />
+            Export Excel
           </button>
           <button 
             className="btn btn-success"
             onClick={handleExportPDF}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
           >
-            <div className="flex items-center gap-2">
-              <Download size={16} />
-              <span>Export PDF</span>
-            </div>
+            <Download size={16} />
+            Export PDF
           </button>
         </div>
       </div>
 
       {/* Results Table */}
-      <div className="card p-0 overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+        <div style={{ overflowX: 'auto' }}>
           <table className="table">
             <thead>
               <tr>
@@ -288,7 +397,12 @@ const ResultPage: React.FC = () => {
               {filteredAndSortedResults.map((student) => (
                 <tr key={student.id}>
                   <td>
-                    <div className="flex items-center gap-2 font-semibold">
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '8px',
+                      fontWeight: '600'
+                    }}>
                       {student.rank <= 3 && (
                         <Trophy 
                           size={16} 
@@ -298,22 +412,29 @@ const ResultPage: React.FC = () => {
                       {student.rank}
                     </div>
                   </td>
-                  <td className="font-medium">{student.studentName}</td>
+                  <td style={{ fontWeight: '500' }}>{student.studentName}</td>
                   <td>{student.rollNo}</td>
                   <td>{student.studentClass}</td>
                   <td>{student.subject}</td>
-                  <td className="font-semibold">
+                  <td style={{ fontWeight: '600' }}>
                     {student.marks}/{student.totalMarks}
                   </td>
                   <td>
-                    <span className="font-semibold" style={{ color: getGradeColor(student.percentage) }}>
+                    <span style={{ 
+                      color: getGradeColor(student.percentage),
+                      fontWeight: '600'
+                    }}>
                       {student.percentage.toFixed(1)}%
                     </span>
                   </td>
                   <td>
-                    <span className="px-2 py-1 rounded text-xs font-semibold" style={{ 
+                    <span style={{ 
                       backgroundColor: `${getGradeColor(student.percentage)}20`,
-                      color: getGradeColor(student.percentage)
+                      color: getGradeColor(student.percentage),
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      fontWeight: '600'
                     }}>
                       {getGrade(student.percentage)}
                     </span>
@@ -326,9 +447,13 @@ const ResultPage: React.FC = () => {
         </div>
 
         {filteredAndSortedResults.length === 0 && (
-          <div className="text-center p-10 text-gray-500">
-            <Filter size={48} className="mx-auto mb-4 opacity-50" />
-            <h3 className="mb-2">No results found</h3>
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '40px',
+            color: '#6b7280'
+          }}>
+            <Filter size={48} style={{ margin: '0 auto 16px', opacity: 0.5 }} />
+            <h3 style={{ marginBottom: '8px' }}>No results found</h3>
             <p>Try adjusting your search criteria or filters</p>
           </div>
         )}

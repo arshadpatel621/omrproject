@@ -34,13 +34,32 @@ const LoginPage: React.FC = () => {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-700 p-4">
-      <div className="card w-full max-w-md m-5 bg-white">
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-500">
+      <div className="card" style={{ width: '100%', maxWidth: '400px', margin: '20px', background: 'white' }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{
+            width: '80px',
+            height: '80px',
+            backgroundColor: '#eff6ff',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 16px',
+            color: '#3b82f6'
+          }}>
             <LogIn size={40} />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h1>
-          <p className="text-gray-500">Sign in to your OMR Management account</p>
+          <h1 style={{ 
+            fontSize: '28px', 
+            fontWeight: '700', 
+            color: '#1f2937',
+            marginBottom: '8px'
+          }}>
+            Welcome Back
+          </h1>
+          <p style={{ color: '#6b7280' }}>
+            Sign in to your OMR Management account
+          </p>
         </div>
 
         {error && (
@@ -64,19 +83,29 @@ const LoginPage: React.FC = () => {
 
           <div className="form-group">
             <label className="form-label">Password</label>
-            <div className="relative">
+            <div style={{ position: 'relative' }}>
               <input
                 type={showPassword ? 'text' : 'password'}
-                className="form-input pr-12"
+                className="form-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 required
+                style={{ paddingRight: '48px' }}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#6b7280'
+                }}
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -85,12 +114,13 @@ const LoginPage: React.FC = () => {
 
           <button
             type="submit"
-            className="btn btn-primary w-full mt-2"
+            className="btn btn-primary"
             disabled={loading}
+            style={{ width: '100%', marginTop: '8px' }}
           >
             {loading ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="spinner w-5 h-5" style={{ borderWidth: '2px' }}></div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <div className="spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }}></div>
                 Signing in...
               </div>
             ) : (
@@ -99,7 +129,14 @@ const LoginPage: React.FC = () => {
           </button>
         </form>
 
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg text-sm text-gray-500">
+        <div style={{ 
+          marginTop: '24px', 
+          padding: '16px', 
+          backgroundColor: '#f9fafb', 
+          borderRadius: '8px',
+          fontSize: '14px',
+          color: '#6b7280'
+        }}>
           <strong>Demo Credentials:</strong><br />
           Username: <code>admin</code><br />
           Password: <code>admin</code>
