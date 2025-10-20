@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DragDropUpload from '../components/DragDropUpload';
 import FileUploader from '../components/FileUploader';
+import ResultsTable from '../components/ResultsTable';
 import { useResults } from '../contexts/ResultsContext';
 import { StudentResult } from '../data/mockData';
-import ResultsTable from '../components/ResultsTable';
 
 const UploadPage: React.FC = () => {
   const navigate = useNavigate();

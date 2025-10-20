@@ -1,9 +1,9 @@
 import { ArrowLeft, Award, Download, Filter, Search, TrendingUp, Trophy, Users } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { classOptions, mockResults, subjectOptions, StudentResult } from '../data/mockData';
-import { exportToCSV, exportToExcel } from '../utils/exportUtils';
 import { useResults } from '../contexts/ResultsContext';
+import { classOptions, mockResults, subjectOptions } from '../data/mockData';
+import { exportToCSV, exportToExcel } from '../utils/exportUtils';
 
 const ResultPage: React.FC = () => {
   const navigate = useNavigate();
