@@ -149,40 +149,17 @@ const UploadPage: React.FC = () => {
   if (uploadSuccess) {
     return (
       <div className="container">
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '12px', 
-          marginBottom: '32px',
-          cursor: 'pointer'
-        }} onClick={() => navigate('/')}>
+        <div className="flex items-center gap-3 mb-8 cursor-pointer" onClick={() => navigate('/')}>
           <ArrowLeft size={20} />
           <span>Back to Dashboard</span>
         </div>
 
-        <div className="card" style={{ textAlign: 'center', padding: '60px 40px' }}>
-          <div style={{
-            width: '80px',
-            height: '80px',
-            backgroundColor: '#10b981',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 24px',
-            color: 'white'
-          }}>
+        <div className="card text-center py-14 px-10">
+          <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white">
             <CheckCircle size={40} />
           </div>
-          <h1 style={{ 
-            fontSize: '28px', 
-            fontWeight: '700', 
-            color: '#1f2937',
-            marginBottom: '12px'
-          }}>
-            Upload Successful!
-          </h1>
-          <p style={{ color: '#6b7280', fontSize: '18px', marginBottom: '32px' }}>
+          <h1 className="text-2xl font-bold text-gray-800 mb-3">Upload Successful!</h1>
+          <p className="text-gray-500 text-lg mb-8">
             Your files have been uploaded and are being processed. You can view the results once processing is complete.
           </p>
           <button 
@@ -198,42 +175,20 @@ const UploadPage: React.FC = () => {
 
   return (
     <main className="container mx-auto py-8 min-h-screen overflow-auto">
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '12px', 
-        marginBottom: '32px',
-        cursor: 'pointer'
-      }} onClick={() => navigate('/')}>
+      <div className="flex items-center gap-3 mb-8 cursor-pointer" onClick={() => navigate('/') }>
         <ArrowLeft size={20} />
         <span>Back to Dashboard</span>
       </div>
 
-      <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ 
-          fontSize: '32px', 
-          fontWeight: '700', 
-          color: '#1f2937',
-          marginBottom: '8px'
-        }}>
-          Upload Files
-        </h1>
-        <p style={{ color: '#6b7280', fontSize: '18px' }}>
-          Upload answer keys and student answer sheets for processing
-        </p>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Upload Files</h1>
+        <p className="text-gray-500 text-lg">Upload answer keys and student answer sheets for processing</p>
       </div>
 
-      <div style={{ display: 'grid', gap: '24px', maxWidth: '800px' }}>
+      <div className="grid gap-6 max-w-3xl">
         {/* Class Selection */}
         <div className="card">
-          <h3 style={{ 
-            fontSize: '18px', 
-            fontWeight: '600', 
-            color: '#1f2937',
-            marginBottom: '16px'
-          }}>
-            Select Class
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Select Class</h3>
           <div className="form-group">
             <label className="form-label">Choose the class for this upload</label>
             <select
@@ -261,7 +216,7 @@ const UploadPage: React.FC = () => {
           selectedFile={answerKeyFile}
         />
         <div className="card">
-          <p style={{ color: '#6b7280', marginBottom: 8 }}>Or paste/choose a text-based answer key (CSV or single-line answers)</p>
+          <p className="text-gray-500 mb-2">Or paste/choose a text-based answer key (CSV or single-line answers)</p>
           <FileUploader label="Answer Key (CSV/text)" accept=".csv,.txt" onParse={(txt) => setAnswerKeyText(txt)} />
         </div>
 
@@ -275,29 +230,20 @@ const UploadPage: React.FC = () => {
           selectedFile={studentSheetsFile}
         />
         <div className="card">
-          <p style={{ color: '#6b7280', marginBottom: 8 }}>Or upload a CSV with rows: Roll,Name,Class,ans1,ans2,...</p>
+          <p className="text-gray-500 mb-2">Or upload a CSV with rows: Roll,Name,Class,ans1,ans2,...</p>
           <FileUploader label="Student Answers (CSV)" accept=".csv,.txt" onParse={(txt) => setStudentText(txt)} />
         </div>
 
         {/* Upload Button */}
         <div className="card">
           <button
-            className="btn btn-primary"
+            className="btn btn-primary w-full py-4 text-lg flex items-center justify-center gap-3"
             onClick={handleUpload}
             disabled={!isFormValid || isUploading}
-            style={{ 
-              width: '100%', 
-              padding: '16px',
-              fontSize: '18px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '12px'
-            }}
           >
             {isUploading ? (
               <>
-                <div className="spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }}></div>
+                <div className="spinner w-5 h-5" style={{ borderWidth: '2px' }}></div>
                 Processing Files...
               </>
             ) : (
@@ -309,12 +255,7 @@ const UploadPage: React.FC = () => {
           </button>
           
           {!isFormValid && (
-            <p style={{ 
-              color: '#6b7280', 
-              fontSize: '14px', 
-              textAlign: 'center', 
-              marginTop: '12px' 
-            }}>
+            <p className="text-gray-500 text-sm text-center mt-3">
               Please select a class and upload both files to continue
             </p>
           )}
@@ -322,84 +263,29 @@ const UploadPage: React.FC = () => {
       </div>
 
       {/* Instructions */}
-      <div className="card" style={{ marginTop: '32px' }}>
-        <h3 style={{ 
-          fontSize: '18px', 
-          fontWeight: '600', 
-          color: '#1f2937',
-          marginBottom: '16px'
-        }}>
-          Upload Instructions
-        </h3>
-        <div style={{ display: 'grid', gap: '16px' }}>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <div style={{
-              width: '24px',
-              height: '24px',
-              backgroundColor: '#3b82f6',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: '12px',
-              fontWeight: '600',
-              flexShrink: 0
-            }}>1</div>
+      <div className="card mt-8">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Upload Instructions</h3>
+        <div className="grid gap-4">
+          <div className="flex gap-3">
+            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">1</div>
             <div>
               <strong>Select Class:</strong> Choose the appropriate class for the test from the dropdown menu.
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <div style={{
-              width: '24px',
-              height: '24px',
-              backgroundColor: '#3b82f6',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: '12px',
-              fontWeight: '600',
-              flexShrink: 0
-            }}>2</div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">2</div>
             <div>
               <strong>Upload Answer Key:</strong> Upload a clear scan or PDF of the answer key. Supported formats: PDF, JPG, PNG, TIFF (Max 10MB).
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <div style={{
-              width: '24px',
-              height: '24px',
-              backgroundColor: '#3b82f6',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: '12px',
-              fontWeight: '600',
-              flexShrink: 0
-            }}>3</div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">3</div>
             <div>
               <strong>Upload Student Sheets:</strong> Upload all student answer sheets in a single file or multiple files. Supported formats: PDF, JPG, PNG, TIFF (Max 50MB).
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <div style={{
-              width: '24px',
-              height: '24px',
-              backgroundColor: '#3b82f6',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: '12px',
-              fontWeight: '600',
-              flexShrink: 0
-            }}>4</div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">4</div>
             <div>
               <strong>Process:</strong> Click the upload button to process the files. Results will be available once processing is complete.
             </div>
@@ -408,8 +294,8 @@ const UploadPage: React.FC = () => {
       </div>
       {/* Display processed results (if any) */}
       {results && results.length > 0 && (
-        <div style={{ marginTop: 24 }}>
-          <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>Scanned Results</h3>
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-3">Scanned Results</h3>
           <ResultsTable data={results} />
         </div>
       )}

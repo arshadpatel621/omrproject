@@ -45,56 +45,27 @@ const HomePage: React.FC = () => {
 
   return (
     <main className="container mx-auto py-8 min-h-screen overflow-auto">
-      <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ 
-          fontSize: '32px', 
-          fontWeight: '700', 
-          color: '#1f2937',
-          marginBottom: '8px'
-        }}>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
           Dashboard
         </h1>
-        <p style={{ color: '#6b7280', fontSize: '18px' }}>
+        <p className="text-gray-500 text-lg">
           Welcome to the OMR Management System. Manage your tests and view results efficiently.
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-        gap: '20px',
-        marginBottom: '40px'
-      }}>
+      <div className="grid gap-5 mb-10" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
         {stats.map((stat, index) => (
-          <div key={index} className="card" style={{ 
-            padding: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px'
-          }}>
-            <div style={{
-              width: '48px',
-              height: '48px',
-              backgroundColor: `${stat.color}20`,
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: stat.color
-            }}>
+          <div key={index} className="card p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${stat.color}20`, color: stat.color }}>
               {stat.icon}
             </div>
             <div>
-              <div style={{ 
-                fontSize: '24px', 
-                fontWeight: '700', 
-                color: '#1f2937',
-                marginBottom: '4px'
-              }}>
+              <div className="text-2xl font-bold text-gray-800 mb-1">
                 {stat.value}
               </div>
-              <div style={{ color: '#6b7280', fontSize: '14px' }}>
+              <div className="text-gray-500 text-sm">
                 {stat.label}
               </div>
             </div>
@@ -103,13 +74,8 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div style={{ marginBottom: '32px' }}>
-        <h2 style={{ 
-          fontSize: '24px', 
-          fontWeight: '600', 
-          color: '#1f2937',
-          marginBottom: '20px'
-        }}>
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-5">
           Quick Actions
         </h2>
         <div className="dashboard-grid">
@@ -134,42 +100,27 @@ const HomePage: React.FC = () => {
 
       {/* Recent Activity */}
       <div className="card">
-        <h2 style={{ 
-          fontSize: '24px', 
-          fontWeight: '600', 
-          color: '#1f2937',
-          marginBottom: '20px'
-        }}>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-5">
           Recent Activity
         </h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="flex flex-col gap-4">
           {[
             { action: 'Uploaded test results for Class 10A', time: '2 hours ago', type: 'upload' },
             { action: 'Generated report for Mathematics Test', time: '1 day ago', type: 'report' },
             { action: 'Processed 45 answer sheets', time: '2 days ago', type: 'process' },
             { action: 'Added new student batch', time: '3 days ago', type: 'student' }
           ].map((activity, index) => (
-            <div key={index} style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '12px',
-              padding: '12px',
-              backgroundColor: '#f9fafb',
-              borderRadius: '8px'
-            }}>
-              <div style={{
-                width: '8px',
-                height: '8px',
+            <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <div className="w-2 h-2 rounded-full" style={{
                 backgroundColor: activity.type === 'upload' ? '#10b981' : 
                                activity.type === 'report' ? '#3b82f6' :
-                               activity.type === 'process' ? '#8b5cf6' : '#f59e0b',
-                borderRadius: '50%'
+                               activity.type === 'process' ? '#8b5cf6' : '#f59e0b'
               }}></div>
-              <div style={{ flex: 1 }}>
-                <div style={{ color: '#374151', fontWeight: '500' }}>
+              <div className="flex-1">
+                <div className="text-gray-700 font-medium">
                   {activity.action}
                 </div>
-                <div style={{ color: '#6b7280', fontSize: '14px' }}>
+                <div className="text-gray-500 text-sm">
                   {activity.time}
                 </div>
               </div>
