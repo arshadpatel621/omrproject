@@ -2,14 +2,21 @@ import { ArrowLeft, CheckCircle, Upload } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DragDropUpload from '../components/DragDropUpload';
+import FileUploader from '../components/FileUploader';
+import { useResults } from '../contexts/ResultsContext';
+import { StudentResult } from '../data/mockData';
+import ResultsTable from '../components/ResultsTable';
 
 const UploadPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedClass, setSelectedClass] = useState('');
   const [answerKeyFile, setAnswerKeyFile] = useState<File | null>(null);
   const [studentSheetsFile, setStudentSheetsFile] = useState<File | null>(null);
+  const [answerKeyText, setAnswerKeyText] = useState<string>('');
+  const [studentText, setStudentText] = useState<string>('');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const { setResults, results } = useResults();
 
   const classes = [
     'Class 1A', 'Class 1B', 'Class 2A', 'Class 2B',
@@ -35,31 +42,109 @@ const UploadPage: React.FC = () => {
       return;
     }
 
+    // We'll simulate scanning by reading CSV/text files if they are text; otherwise fall back to mock data
     setIsUploading(true);
 
-    // Simulate upload process
     try {
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      // Mock successful upload
+      // Use FileReader to parse files if they are CSV/text
+      const parseTextFile = (file: File | null) => new Promise<string | null>((resolve) => {
+        if (!file) return resolve(null);
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(String(e.target?.result || ''));
+        reader.onerror = () => resolve(null);
+        // try read as text; images will produce binary but we'll ignore
+        reader.readAsText(file);
+      });
+
+      // prefer explicit text inputs (if user used FileUploader inputs), else try reading binary drag-drop files as text
+      const [fileAnswerText, fileStudentText] = await Promise.all([
+        parseTextFile(answerKeyFile),
+        parseTextFile(studentSheetsFile)
+      ]);
+
+      const finalAnswerText = answerKeyText || fileAnswerText || '';
+      const finalStudentText = studentText || fileStudentText || '';
+
+      let results: StudentResult[] = [];
+
+      if (finalAnswerText && finalStudentText) {
+        // Parse answer key as comma-separated answers on one line
+        const keyLine = finalAnswerText.split(/\r?\n/).find(l => l.trim().length > 0) || '';
+        const keyAnswers = keyLine.split(/[,\s]+/).map(s => s.trim()).filter(Boolean);
+
+        // Parse student CSV: try to parse rows with roll,name,class,answers...
+  const rows = finalStudentText.split(/\r?\n/).map(r => r.trim()).filter(Boolean);
+        for (let i = 0; i < rows.length; i++) {
+          const cols = rows[i].split(/[,,\t]+/).map(c => c.trim()).filter(Boolean);
+          // Try common formats: Roll,Name,Class,ans1,ans2,... OR Name,Roll,Class,ans1...
+          if (cols.length >= keyAnswers.length + 3) {
+            const roll = cols[0];
+            const name = cols[1];
+            const cls = cols[2] || selectedClass;
+            const answers = cols.slice(3, 3 + keyAnswers.length);
+            let marks = 0;
+            for (let q = 0; q < keyAnswers.length; q++) {
+              if ((answers[q] || '').toLowerCase() === (keyAnswers[q] || '').toLowerCase()) marks++;
+            }
+            const total = keyAnswers.length || 0;
+            results.push({
+              id: `${Date.now()}-${i}`,
+              studentName: name || `Student ${i + 1}`,
+              rollNo: roll || `R${i + 1}`,
+              studentClass: cls || selectedClass || 'Unknown',
+              marks,
+              totalMarks: total,
+              percentage: total ? (marks / total) * 100 : 0,
+              rank: 0,
+              testDate: new Date().toISOString().split('T')[0],
+              subject: 'Unknown'
+            });
+          }
+        }
+      }
+
+      // If no parsable results, generate mock data for demo
+      if (results.length === 0) {
+        results = Array.from({ length: 10 }).map((_, idx) => ({
+          id: `${Date.now()}-${idx}`,
+          studentName: `Demo Student ${idx + 1}`,
+          rollNo: `${100 + idx}`,
+          studentClass: selectedClass || `Class 10A`,
+          marks: Math.floor(Math.random() * 41) + 50,
+          totalMarks: 100,
+          percentage: 0,
+          rank: 0,
+          testDate: new Date().toISOString().split('T')[0],
+          subject: 'Mathematics'
+        })) as StudentResult[];
+        results.forEach(r => (r.percentage = (r.marks / r.totalMarks) * 100));
+      }
+
+      // Compute ranks
+      results.sort((a, b) => b.marks - a.marks);
+      results.forEach((r, idx) => (r.rank = idx + 1));
+
+      // Save to context/localStorage
+      setResults(results);
+
       setUploadSuccess(true);
-      
-      // Reset form after success
+
       setTimeout(() => {
+        setUploadSuccess(false);
         setSelectedClass('');
         setAnswerKeyFile(null);
         setStudentSheetsFile(null);
-        setUploadSuccess(false);
-      }, 3000);
-      
+      }, 1500);
+
     } catch (error) {
-      alert('Upload failed. Please try again.');
+      console.error(error);
+      alert('Processing failed. Showing demo data instead.');
     } finally {
       setIsUploading(false);
     }
   };
 
-  const isFormValid = selectedClass && answerKeyFile && studentSheetsFile;
+  const isFormValid = selectedClass && (answerKeyFile || answerKeyText) && (studentSheetsFile || studentText);
 
   if (uploadSuccess) {
     return (
@@ -112,7 +197,7 @@ const UploadPage: React.FC = () => {
   }
 
   return (
-    <div className="container">
+    <main className="container mx-auto py-8 min-h-screen overflow-auto">
       <div style={{ 
         display: 'flex', 
         alignItems: 'center', 
@@ -175,6 +260,10 @@ const UploadPage: React.FC = () => {
           onFileSelect={setAnswerKeyFile}
           selectedFile={answerKeyFile}
         />
+        <div className="card">
+          <p style={{ color: '#6b7280', marginBottom: 8 }}>Or paste/choose a text-based answer key (CSV or single-line answers)</p>
+          <FileUploader label="Answer Key (CSV/text)" accept=".csv,.txt" onParse={(txt) => setAnswerKeyText(txt)} />
+        </div>
 
         {/* Student Answer Sheets Upload */}
         <DragDropUpload
@@ -185,6 +274,10 @@ const UploadPage: React.FC = () => {
           onFileSelect={setStudentSheetsFile}
           selectedFile={studentSheetsFile}
         />
+        <div className="card">
+          <p style={{ color: '#6b7280', marginBottom: 8 }}>Or upload a CSV with rows: Roll,Name,Class,ans1,ans2,...</p>
+          <FileUploader label="Student Answers (CSV)" accept=".csv,.txt" onParse={(txt) => setStudentText(txt)} />
+        </div>
 
         {/* Upload Button */}
         <div className="card">
@@ -313,7 +406,14 @@ const UploadPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+      {/* Display processed results (if any) */}
+      {results && results.length > 0 && (
+        <div style={{ marginTop: 24 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 12 }}>Scanned Results</h3>
+          <ResultsTable data={results} />
+        </div>
+      )}
+    </main>
   );
 };
 

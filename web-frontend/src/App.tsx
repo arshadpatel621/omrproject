@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ResultsProvider } from './contexts/ResultsContext';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import ResultPage from './pages/ResultPage';
@@ -15,8 +16,9 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <Router>
-        <div className="App">
+      <ResultsProvider>
+        <Router>
+          <div className="App">
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route
@@ -35,7 +37,8 @@ const App: React.FC = () => {
           </Routes>
         </div>
       </Router>
-    </AuthProvider>
+    </ResultsProvider>
+  </AuthProvider>
   );
 };
 

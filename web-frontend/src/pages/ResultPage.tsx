@@ -1,8 +1,9 @@
 import { ArrowLeft, Award, Download, Filter, Search, TrendingUp, Trophy, Users } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { classOptions, mockResults, subjectOptions } from '../data/mockData';
+import { classOptions, mockResults, subjectOptions, StudentResult } from '../data/mockData';
 import { exportToCSV, exportToExcel } from '../utils/exportUtils';
+import { useResults } from '../contexts/ResultsContext';
 
 const ResultPage: React.FC = () => {
   const navigate = useNavigate();
@@ -11,9 +12,11 @@ const ResultPage: React.FC = () => {
   const [selectedSubject, setSelectedSubject] = useState('');
   const [sortBy, setSortBy] = useState<'rank' | 'name' | 'marks'>('rank');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const { results } = useResults();
 
   const filteredAndSortedResults = useMemo(() => {
-    let filtered = mockResults.filter(result => {
+    const source = results.length > 0 ? results : mockResults;
+    let filtered = source.filter(result => {
       const matchesSearch = result.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            result.rollNo.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesClass = !selectedClass || result.studentClass === selectedClass;
@@ -42,7 +45,7 @@ const ResultPage: React.FC = () => {
     });
 
     return filtered;
-  }, [searchTerm, selectedClass, selectedSubject, sortBy, sortOrder]);
+  }, [searchTerm, selectedClass, selectedSubject, sortBy, sortOrder, results]);
 
   const handleExportCSV = () => {
     exportToCSV(filteredAndSortedResults, `student_results_${new Date().toISOString().split('T')[0]}`);
@@ -85,7 +88,7 @@ const ResultPage: React.FC = () => {
   }, [filteredAndSortedResults]);
 
   return (
-    <div className="container">
+    <main className="container mx-auto py-8 min-h-screen overflow-auto">
       <div style={{ 
         display: 'flex', 
         alignItems: 'center', 
@@ -443,7 +446,7 @@ const ResultPage: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 };
 

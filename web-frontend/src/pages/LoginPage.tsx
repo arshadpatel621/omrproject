@@ -33,19 +33,8 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-    }}>
-      <div className="card" style={{ 
-        width: '100%', 
-        maxWidth: '400px', 
-        margin: '20px',
-        background: 'white'
-      }}>
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-700 p-4">
+      <div className="card" style={{ width: '100%', maxWidth: '400px', margin: '20px', background: 'white' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{
             width: '80px',
@@ -150,10 +139,10 @@ const LoginPage: React.FC = () => {
         }}>
           <strong>Demo Credentials:</strong><br />
           Username: <code>admin</code><br />
-          Password: <code>password</code>
+          Password: <code>admin</code>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

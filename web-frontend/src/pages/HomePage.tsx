@@ -44,7 +44,7 @@ const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="container">
+    <main className="container mx-auto py-8 min-h-screen overflow-auto">
       <div style={{ marginBottom: '32px' }}>
         <h1 style={{ 
           fontSize: '32px', 
@@ -177,7 +177,7 @@ const HomePage: React.FC = () => {
           ))}
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 
