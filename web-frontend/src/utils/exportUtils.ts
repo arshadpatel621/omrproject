@@ -1,3 +1,5 @@
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { StudentResult } from '../data/mockData';
 
@@ -61,4 +63,31 @@ export const exportToExcel = (data: StudentResult[], filename: string = 'student
   worksheet['!cols'] = colWidths;
 
   XLSX.writeFile(workbook, `${filename}.xlsx`);
+};
+
+export const exportToPDF = (data: StudentResult[], filename: string = 'student_results') => {
+  const doc = new jsPDF({ orientation: 'landscape' });
+  const headers = [['Rank', 'Student Name', 'Roll No', 'Class', 'Subject', 'Marks', 'Total', 'Percentage', 'Test Date']];
+  const rows = data.map((s) => [
+    s.rank,
+    s.studentName,
+    s.rollNo,
+    s.studentClass,
+    s.subject,
+    s.marks,
+    s.totalMarks,
+    `${s.percentage.toFixed(1)}%`,
+    s.testDate,
+  ]);
+
+  (doc as any).autoTable({
+    head: headers,
+    body: rows,
+    styles: { fontSize: 10 },
+    headStyles: { fillColor: [59, 130, 246] },
+    startY: 14,
+    margin: { top: 10 },
+  });
+
+  doc.save(`${filename}.pdf`);
 };

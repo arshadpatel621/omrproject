@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useResults } from '../contexts/ResultsContext';
 import { classOptions, mockResults, subjectOptions } from '../data/mockData';
-import { exportToCSV, exportToExcel } from '../utils/exportUtils';
+import { exportToCSV, exportToExcel, exportToPDF } from '../utils/exportUtils';
 
 const ResultPage: React.FC = () => {
   const navigate = useNavigate();
@@ -53,6 +53,10 @@ const ResultPage: React.FC = () => {
 
   const handleExportExcel = () => {
     exportToExcel(filteredAndSortedResults, `student_results_${new Date().toISOString().split('T')[0]}`);
+  };
+
+  const handleExportPDF = () => {
+    exportToPDF(filteredAndSortedResults, `student_results_${new Date().toISOString().split('T')[0]}`);
   };
 
   const getGradeColor = (percentage: number) => {
@@ -360,6 +364,14 @@ const ResultPage: React.FC = () => {
           >
             <Download size={16} />
             Export Excel
+          </button>
+          <button 
+            className="btn btn-success"
+            onClick={handleExportPDF}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            <Download size={16} />
+            Export PDF
           </button>
         </div>
       </div>
