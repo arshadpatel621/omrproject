@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle, Upload } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -186,84 +187,153 @@ const UploadPage: React.FC = () => {
   if (uploadSuccess) {
     return (
       <div className="container">
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '12px', 
-          marginBottom: '32px',
-          cursor: 'pointer'
-        }} onClick={() => navigate('/')}>
+        <motion.div 
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '12px', 
+            marginBottom: '32px',
+            cursor: 'pointer'
+          }} 
+          onClick={() => navigate('/')}
+          whileHover={{ x: -5 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
           <ArrowLeft size={20} />
           <span>Back to Dashboard</span>
-        </div>
+        </motion.div>
 
-        <div className="card fade-in-up" style={{ textAlign: 'center', padding: '60px 40px' }}>
-          <div style={{
-            width: '80px',
-            height: '80px',
-            backgroundColor: '#10b981',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 24px',
-            color: 'white',
-            animation: 'pulse 2s infinite'
-          }}>
+        <motion.div 
+          className="card fade-in-up" 
+          style={{ textAlign: 'center', padding: '60px 40px' }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <motion.div 
+            style={{
+              width: '80px',
+              height: '80px',
+              backgroundColor: '#10b981',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 24px',
+              color: 'white'
+            }}
+            animate={{ 
+              scale: [1, 1.1, 1],
+              rotate: [0, 5, -5, 0]
+            }}
+            transition={{ 
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
             <CheckCircle size={40} />
-          </div>
-          <h1 style={{ 
-            fontSize: '28px', 
-            fontWeight: '700', 
-            color: '#1f2937',
-            marginBottom: '12px'
-          }}>
+          </motion.div>
+          <motion.h1 
+            style={{ 
+              fontSize: '28px', 
+              fontWeight: '700', 
+              color: '#1f2937',
+              marginBottom: '12px'
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
             Upload Successful!
-          </h1>
-          <p style={{ color: '#6b7280', fontSize: '18px', marginBottom: '32px' }}>
+          </motion.h1>
+          <motion.p 
+            style={{ color: '#6b7280', fontSize: '18px', marginBottom: '32px' }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
             Your files have been uploaded and are being processed. You can view the results once processing is complete.
-          </p>
-          <button 
+          </motion.p>
+          <motion.button 
             className="btn btn-primary"
             onClick={() => navigate('/results')}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             View Results
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </div>
     );
   }
 
   return (
     <main className="container mx-auto py-8 min-h-screen overflow-auto">
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '12px', 
-        marginBottom: '32px',
-        cursor: 'pointer'
-      }} onClick={() => navigate('/')}>
+      <motion.div 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '12px', 
+          marginBottom: '32px',
+          cursor: 'pointer'
+        }} 
+        onClick={() => navigate('/')}
+        whileHover={{ x: -5 }}
+        transition={{ type: "spring", stiffness: 300 }}
+      >
         <ArrowLeft size={20} />
         <span>Back to Dashboard</span>
-      </div>
+      </motion.div>
 
-      <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ 
-          fontSize: '32px', 
-          fontWeight: '700', 
-          color: '#1f2937',
-          marginBottom: '8px'
-        }}>
+      <motion.div 
+        style={{ marginBottom: '32px' }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <motion.h1 
+          style={{ 
+            fontSize: '32px', 
+            fontWeight: '700', 
+            color: '#1f2937',
+            marginBottom: '8px'
+          }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+        >
           Upload Files
-        </h1>
-        <p style={{ color: '#6b7280', fontSize: '18px' }}>
+        </motion.h1>
+        <motion.p 
+          style={{ color: '#6b7280', fontSize: '18px' }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
           Upload answer keys and student answer sheets for processing
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
-      <div style={{ display: 'grid', gap: '24px', maxWidth: '800px' }}>
+      <motion.div 
+        style={{ display: 'grid', gap: '24px', maxWidth: '800px' }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.6 }}
+      >
         {/* Class Selection */}
-        <div className="card">
+        <motion.div 
+          className="card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          whileHover={{ y: -2 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
           <h3 style={{ 
             fontSize: '18px', 
             fontWeight: '600', 

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { CheckCircle, Upload, X } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 
@@ -94,25 +95,48 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
   };
 
   return (
-    <div className="card">
-      <h3 style={{ 
-        fontSize: '18px', 
-        fontWeight: '600', 
-        color: '#1f2937',
-        marginBottom: '8px'
-      }}>
+    <motion.div 
+      className="card"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -2 }}
+      transition={{ type: "spring", stiffness: 300 }}
+    >
+      <motion.h3 
+        style={{ 
+          fontSize: '18px', 
+          fontWeight: '600', 
+          color: '#1f2937',
+          marginBottom: '8px'
+        }}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.4 }}
+      >
         {title}
-      </h3>
-      <p style={{ color: '#6b7280', marginBottom: '20px' }}>
+      </motion.h3>
+      <motion.p 
+        style={{ color: '#6b7280', marginBottom: '20px' }}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.4 }}
+      >
         {description}
-      </p>
+      </motion.p>
 
-      <div
+      <motion.div
         className={`drag-drop-area ${isDragOver ? 'drag-over' : ''} ${selectedFile ? 'has-files' : ''}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={handleClick}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.3, duration: 0.4 }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: "spring", stiffness: 300 }}
       >
         <input
           ref={fileInputRef}
@@ -123,19 +147,34 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
         />
 
         {selectedFile ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{
-              width: '48px',
-              height: '48px',
-              backgroundColor: '#10b981',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white'
-            }}>
+          <motion.div 
+            style={{ display: 'flex', alignItems: 'center', gap: '12px' }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div 
+              style={{
+                width: '48px',
+                height: '48px',
+                backgroundColor: '#10b981',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white'
+              }}
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0]
+              }}
+              transition={{ 
+                duration: 0.6,
+                ease: "easeInOut"
+              }}
+            >
               <CheckCircle size={24} />
-            </div>
+            </motion.div>
             <div style={{ flex: 1, textAlign: 'left' }}>
               <div style={{ fontWeight: '600', color: '#1f2937' }}>
                 {selectedFile.name}
@@ -144,7 +183,7 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
                 {formatFileSize(selectedFile.size)}
               </div>
             </div>
-            <button
+            <motion.button
               onClick={(e) => {
                 e.stopPropagation();
                 removeFile();
@@ -156,41 +195,75 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
                 color: '#6b7280',
                 padding: '8px'
               }}
+              whileHover={{ scale: 1.1, color: '#ef4444' }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
               <X size={20} />
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         ) : (
-          <div>
-            <div style={{
-              width: '64px',
-              height: '64px',
-              backgroundColor: '#eff6ff',
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 16px',
-              color: '#3b82f6'
-            }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <motion.div 
+              style={{
+                width: '64px',
+                height: '64px',
+                backgroundColor: '#eff6ff',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px',
+                color: '#3b82f6'
+              }}
+              animate={{ 
+                y: [0, -5, 0],
+                rotate: [0, 2, -2, 0]
+              }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
               <Upload size={32} />
-            </div>
-            <div style={{ fontSize: '16px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}>
+            </motion.div>
+            <motion.div 
+              style={{ fontSize: '16px', fontWeight: '600', color: '#1f2937', marginBottom: '8px' }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+            >
               Drop files here or click to browse
-            </div>
-            <div style={{ color: '#6b7280', fontSize: '14px' }}>
+            </motion.div>
+            <motion.div 
+              style={{ color: '#6b7280', fontSize: '14px' }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+            >
               Accepted formats: {acceptedTypes.join(', ')} (Max {maxSize}MB)
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
       {error && (
-        <div className="alert alert-error" style={{ marginTop: '16px' }}>
+        <motion.div 
+          className="alert alert-error" 
+          style={{ marginTop: '16px' }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
           {error}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

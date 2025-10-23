@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { ArrowLeft, Award, Download, Filter, Search, TrendingUp, Trophy, Users } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -93,44 +94,77 @@ const ResultPage: React.FC = () => {
 
   return (
     <main className="container mx-auto py-8 min-h-screen overflow-auto">
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '12px', 
-        marginBottom: '32px',
-        cursor: 'pointer'
-      }} onClick={() => navigate('/')}>
+      <motion.div 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '12px', 
+          marginBottom: '32px',
+          cursor: 'pointer'
+        }} 
+        onClick={() => navigate('/')}
+        whileHover={{ x: -5 }}
+        transition={{ type: "spring", stiffness: 300 }}
+      >
         <ArrowLeft size={20} />
         <span>Back to Dashboard</span>
-      </div>
+      </motion.div>
 
-      <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ 
-          fontSize: '32px', 
-          fontWeight: '700', 
-          color: '#1f2937',
-          marginBottom: '8px'
-        }}>
+      <motion.div 
+        style={{ marginBottom: '32px' }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <motion.h1 
+          style={{ 
+            fontSize: '32px', 
+            fontWeight: '700', 
+            color: '#1f2937',
+            marginBottom: '8px'
+          }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+        >
           Student Results
-        </h1>
-        <p style={{ color: '#6b7280', fontSize: '18px' }}>
+        </motion.h1>
+        <motion.p 
+          style={{ color: '#6b7280', fontSize: '18px' }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
           View and manage student test results
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
       {/* Stats Cards */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-        gap: '20px',
-        marginBottom: '32px'
-      }}>
-        <div className="card" style={{ 
-          padding: '20px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px'
-        }}>
+      <motion.div 
+        style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+          gap: '20px',
+          marginBottom: '32px'
+        }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.6 }}
+      >
+        <motion.div 
+          className="card" 
+          style={{ 
+            padding: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px'
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          whileHover={{ scale: 1.02, y: -2 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
           <div style={{
             width: '48px',
             height: '48px',

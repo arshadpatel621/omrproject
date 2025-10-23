@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -34,38 +35,68 @@ const LoginPage: React.FC = () => {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-700 p-4">
-      <div className="card" style={{ width: '100%', maxWidth: '400px', margin: '20px', background: 'white' }}>
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{
-            width: '80px',
-            height: '80px',
-            backgroundColor: '#eff6ff',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 16px',
-            color: '#3b82f6'
-          }}>
+      <motion.div 
+        className="card" 
+        style={{ width: '100%', maxWidth: '400px', margin: '20px', background: 'white' }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <motion.div 
+          style={{ textAlign: 'center', marginBottom: '32px' }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <motion.div 
+            style={{
+              width: '80px',
+              height: '80px',
+              backgroundColor: '#eff6ff',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px',
+              color: '#3b82f6'
+            }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
             <LogIn size={40} />
-          </div>
-          <h1 style={{ 
-            fontSize: '28px', 
-            fontWeight: '700', 
-            color: '#1f2937',
-            marginBottom: '8px'
-          }}>
+          </motion.div>
+          <motion.h1 
+            style={{ 
+              fontSize: '28px', 
+              fontWeight: '700', 
+              color: '#1f2937',
+              marginBottom: '8px'
+            }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
             Welcome Back
-          </h1>
-          <p style={{ color: '#6b7280' }}>
+          </motion.h1>
+          <motion.p 
+            style={{ color: '#6b7280' }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
             Sign in to your OMR Management account
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {error && (
-          <div className="alert alert-error">
+          <motion.div 
+            className="alert alert-error"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
             {error}
-          </div>
+          </motion.div>
         )}
 
         <form onSubmit={handleSubmit}>
@@ -112,11 +143,14 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          <button
+          <motion.button
             type="submit"
             className="btn btn-primary"
             disabled={loading}
             style={{ width: '100%', marginTop: '8px' }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             {loading ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
@@ -126,22 +160,27 @@ const LoginPage: React.FC = () => {
             ) : (
               'Sign In'
             )}
-          </button>
+          </motion.button>
         </form>
 
-        <div style={{ 
-          marginTop: '24px', 
-          padding: '16px', 
-          backgroundColor: '#f9fafb', 
-          borderRadius: '8px',
-          fontSize: '14px',
-          color: '#6b7280'
-        }}>
+        <motion.div 
+          style={{ 
+            marginTop: '24px', 
+            padding: '16px', 
+            backgroundColor: '#f9fafb', 
+            borderRadius: '8px',
+            fontSize: '14px',
+            color: '#6b7280'
+          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
           <strong>Demo Credentials:</strong><br />
           Username: <code>admin</code><br />
-          Password: <code>admin</code>
-        </div>
-      </div>
+          Password: <code>admin123</code>
+        </motion.div>
+      </motion.div>
     </main>
   );
 };

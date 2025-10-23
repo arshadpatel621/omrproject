@@ -395,7 +395,17 @@ code {
   animation: fadeInUp 0.5s ease-out;
 }
 
-/* Responsive improvements */
+/* Enhanced Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  .table {
+    font-size: 14px;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 0 16px;
@@ -408,10 +418,13 @@ code {
   
   .navbar-nav {
     gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   
   .dashboard-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
   
   .btn {
@@ -424,12 +437,35 @@ code {
   }
   
   .table {
-    font-size: 14px;
+    font-size: 12px;
   }
   
   .table th,
   .table td {
-    padding: 8px;
+    padding: 8px 4px;
+  }
+  
+  /* Hide some table columns on mobile */
+  .table th:nth-child(n+6),
+  .table td:nth-child(n+6) {
+    display: none;
+  }
+  
+  /* Make drag drop areas more mobile friendly */
+  .drag-drop-area {
+    padding: 20px;
+    min-height: 120px;
+  }
+  
+  /* Adjust form layouts for mobile */
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-input,
+  .form-select {
+    padding: 10px 12px;
+    font-size: 14px;
   }
 }
 
@@ -445,5 +481,83 @@ code {
   
   .card {
     padding: 12px;
+  }
+  
+  /* Further optimize for very small screens */
+  .dashboard-card {
+    padding: 20px;
+  }
+  
+  .dashboard-card h3 {
+    font-size: 18px;
+  }
+  
+  .dashboard-card p {
+    font-size: 14px;
+  }
+  
+  /* Stack stats cards vertically on very small screens */
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Make table more compact */
+  .table {
+    font-size: 11px;
+  }
+  
+  .table th,
+  .table td {
+    padding: 6px 2px;
+  }
+  
+  /* Hide more columns on very small screens */
+  .table th:nth-child(n+5),
+  .table td:nth-child(n+5) {
+    display: none;
+  }
+  
+  /* Optimize drag drop for small screens */
+  .drag-drop-area {
+    padding: 16px;
+    min-height: 100px;
+  }
+  
+  .drag-drop-area div {
+    font-size: 14px;
+  }
+}
+
+/* Additional utility classes for responsive design */
+@media (max-width: 640px) {
+  .hidden-mobile {
+    display: none !important;
+  }
+  
+  .mobile-full-width {
+    width: 100% !important;
+  }
+  
+  .mobile-stack {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .navbar,
+  .btn,
+  .drag-drop-area {
+    display: none !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #e5e7eb !important;
+  }
+  
+  .table {
+    font-size: 12px;
   }
 }
